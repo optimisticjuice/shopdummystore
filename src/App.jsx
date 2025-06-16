@@ -5,7 +5,7 @@ import Contact from "./Pages/Contact.jsx";
 import ProductDetails from "./Pages/ProductDetails.jsx";
 import Product from "./PageComponent/Product.jsx";
 import Navbar from "./PageComponent/Navbar.jsx";
-
+import Cart from "./Pages/Cart.jsx";
 function App() {
   return (
     <Router>
@@ -16,6 +16,7 @@ function App() {
         <Route path="/product/details" element={<ProductDetails />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/cart" element={<Cart />} />
       </Routes>
     </Router>
   );
