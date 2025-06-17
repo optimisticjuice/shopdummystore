@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import LoadingSpinner from "./LoadingSpinner.jsx";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card.jsx";
+import { useDispatch } from 'react-redux'
+import { increment } from "@/redux/Slices.js";
 
 function Product() {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -36,9 +39,8 @@ function Product() {
     });
   }
 
-  function addToCart({ product }) {
-    console.log("Product added to cart:", product);
-    // Here you would typically update the cart state or context
+  function addToCart() {
+    dispatch(increment())
   }
   return (
     <>
@@ -47,28 +49,28 @@ function Product() {
           {products.map((product) => (
             <Card
               key={product.id}
-              onClick={() => handleProductClick(product)}
-              className=""
+              className="pb-0 hover:cursor-pointer"
             >
-              <CardHeader className="text-purple-950">
+              <CardHeader
+                className="text-purple-950"
+                onClick={() => handleProductClick(product)}
+              >
                 {product.title.split(" ").slice(0, 4).join(" ")}
               </CardHeader>
-              <CardContent>
+              <CardContent
+                className="flex items-center justify-center"
+                onClick={() => handleProductClick(product)}
+              >
                 <img
                   src={product.image}
                   alt={product.title}
-                  style={{
-                    width: "120px",
-                    height: "120px",
-                    objectFit: "cover",
-                    borderRadius: "10px",
-                  }}
+                  className="size-[120px] object-cover rounded-[10px]"
                 />
-                <p className="text-purple-950">$ {product.price}</p>
               </CardContent>
-              <CardFooter>
+              <CardFooter className="flex flex-col gap-2 items-start">
+                <p className="text-purple-950">$ {product.price}</p>
                 <button
-                  onClick={() => addToCart(product)}
+                  onClick={addToCart}
                   className="bg-purple-950 text-white py-1 px-2 rounded cursor-pointer"
                 >
                   Add to Cart
