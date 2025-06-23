@@ -4,11 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card.jsx";
 import { useDispatch } from 'react-redux'
 import { increment } from "@/redux/Slices.js";
+import { Categories, Colors, Sizes } from "@/assets/data/filterOptions.js";
+import { Input } from "@/components/ui/input.jsx";
+import { Label } from "@/components/ui/label.jsx";
+import { Checkbox } from "@/components/ui/checkbox.jsx";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select.jsx";
 
 function Product() {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const [sortOrder, setSortOrder] = useState('default');
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -23,6 +29,26 @@ function Product() {
 
     fetchProducts();
   }, []);
+
+  const sortedProducts = [...products].sort((a, b) => {
+    if (sortOrder === 'asc') {
+      return a.price - b.price;
+    } else if (sortOrder === 'desc') {
+      return b.price - a.price;
+    } else {
+      // Default case: no sorting
+      return 0;
+    }
+  });
+
+  function handleProductClick(product) {
+    navigate("/product/details", { state: { product }, });
+  }
+
+  function addToCart() {
+    dispatch(increment())
+  }
+
   if (products.length < 1) {
     return (
       <>
@@ -31,25 +57,63 @@ function Product() {
         </div>
       </>
     );
-  }
+  };
 
-  function handleProductClick(product) {
-    navigate("/product/details", {
-      state: { product },
-    });
-  }
-
-  function addToCart() {
-    dispatch(increment())
-  }
   return (
-    <>
-      <div>
+    <div className="flex gap-8 px-5 py-10">
+      <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-6">
+          <h1>Search</h1>
+          <Input
+            placeholder="Search here..."
+          />
+        </div>
+        <div className="flex flex-col gap-6">
+          <h1>Categories</h1>
+          {Categories.map((category, index) =>
+            <div key={index} className="flex items-center gap-3">
+              <Checkbox id={category} />
+              <Label htmlFor={category}>{category}</Label>
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-6">
+          <h1>Color</h1>
+          {Colors.map((color, index) =>
+            <div key={index} className="flex items-center gap-3">
+              <Checkbox id={color} />
+              <Label htmlFor={color}>{color}</Label>
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-6">
+          <h1>Size</h1>
+          {Sizes.map((size, index) =>
+            <div key={index} className="flex items-center gap-3">
+              <Checkbox id={size} />
+              <Label htmlFor={size}>{size}</Label>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="w-full">
+        <div className="flex justify-end pr-5">
+          <Select onValueChange={(value) => setSortOrder(value)}>
+            <SelectTrigger className="w-[180px] h-7">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="default">Default</SelectItem>
+              <SelectItem value="asc">Price - Low to High</SelectItem>
+              <SelectItem value="desc">Price - High to Low</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <div className="grid grid-cols-4 grid-rows-4 gap-4 p-5 hover:cursor-auto">
-          {products.map((product) => (
+          {sortedProducts.map((product) => (
             <Card
               key={product.id}
-              className="pb-0 hover:cursor-pointer"
+              className="hover:cursor-pointer"
             >
               <CardHeader
                 className="text-purple-950"
@@ -80,9 +144,9 @@ function Product() {
           ))}
         </div>
 
-        {/* the text of the pixel size is the same regardless of the tag so 45px is 45px regardless of tag */}
       </div>
-    </>
+      {/* the text of the pixel size is the same regardless of the tag so 45px is 45px regardless of tag */}
+    </div>
   );
 }
 
