@@ -1,0 +1,11 @@
+@media screen and (max-width: 768px) {
+    .navbar-laptop {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 769px) {
+    .navbar-mobile {
+        display: none;
+    }
+}

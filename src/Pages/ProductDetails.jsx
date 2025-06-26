@@ -1,6 +1,8 @@
 import { useLocation } from "react-router-dom";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Rating from '@mui/material/Rating';
+import Stack from '@mui/material/Stack';
 
 function ProductDetails() {
   const location = useLocation();
@@ -9,24 +11,18 @@ function ProductDetails() {
   return (
     <div>
       {product ? (
-        <div className="flex justify-center items-center p-5 gap-8 ">
-          <Card className={"bg-green-200 w-1/2"}>
-            <CardHeader>
-              <h3>{product.title}</h3>
-            </CardHeader>
+        <div className="flex justify-center items-center p-14 gap-16">
+          <Card className={"border-none h-screen w-1/2"}>
             <CardContent>
-              <img src={product.image} alt={product.title} />
-              <p>Price: ${product.price}</p>
+              <img src={product.image} alt={product.title} className="size-[500px]" />
             </CardContent>
           </Card>
-          <div className="bg-gray-300 p-2 w-1/2">
-            <h4>Product Details</h4>
-            <p>{product.description}</p>
-            <p>Category: {product.category}</p>
-            <p>
-              Rating: {product.rating.rate} ({product.rating.count} reviews)
-            </p>
-
+          <div className="flex flex-col gap-7 h-screen p-2 w-1/2">
+            <h1 className="text-2xl">{product.title}</h1>
+            <p className="text-xl text-semibold">${product.price}</p>
+            <Rating name="half-rating-read" defaultValue={product?.rating?.rate} precision={0.5} readOnly />
+            <p className="mb-[28px]">{product?.description}</p>
+            <hr />
             <div className="flex gap-3 justify-center">
               <Button>Buy</Button>
               <Button>Add to Cart</Button>

@@ -4,16 +4,19 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card.jsx";
 import { useDispatch } from 'react-redux'
 import { increment } from "@/redux/Slices.js";
-import { Categories, Colors, Sizes } from "@/assets/data/filterOptions.js";
+import { Categories } from "@/assets/data/filterOptions.js";
 import { Input } from "@/components/ui/input.jsx";
 import { Label } from "@/components/ui/label.jsx";
 import { Checkbox } from "@/components/ui/checkbox.jsx";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select.jsx";
+import { motion } from "motion/react"
 
 function Product() {
-  const [products, setProducts] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [products, setProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  // const [selectedCategories, setSelectedCategories] = useState([]);
   const [sortOrder, setSortOrder] = useState('default');
 
   useEffect(() => {
@@ -30,6 +33,14 @@ function Product() {
     fetchProducts();
   }, []);
 
+  // const handleCheckboxChange = (category) => {
+  //   setSelectedCategories(prev =>
+  //     prev.includes(category)
+  //       ? prev.filter(c => c !== category)
+  //       : [...prev, category]
+  //   );
+  // };
+
   const sortedProducts = [...products].sort((a, b) => {
     if (sortOrder === 'asc') {
       return a.price - b.price;
@@ -40,6 +51,10 @@ function Product() {
       return 0;
     }
   });
+
+  const filteredProducts = sortedProducts.filter(product =>
+    product.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   function handleProductClick(product) {
     navigate("/product/details", { state: { product }, });
@@ -60,12 +75,14 @@ function Product() {
   };
 
   return (
-    <div className="flex gap-8 px-5 py-10">
+    <div className="flex gap-0 px-5 py-10">
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-6">
           <h1>Search</h1>
           <Input
-            placeholder="Search here..."
+            placeholder="Search by name..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="flex flex-col gap-6">
@@ -77,30 +94,13 @@ function Product() {
             </div>
           )}
         </div>
-        <div className="flex flex-col gap-6">
-          <h1>Color</h1>
-          {Colors.map((color, index) =>
-            <div key={index} className="flex items-center gap-3">
-              <Checkbox id={color} />
-              <Label htmlFor={color}>{color}</Label>
-            </div>
-          )}
-        </div>
-        <div className="flex flex-col gap-6">
-          <h1>Size</h1>
-          {Sizes.map((size, index) =>
-            <div key={index} className="flex items-center gap-3">
-              <Checkbox id={size} />
-              <Label htmlFor={size}>{size}</Label>
-            </div>
-          )}
-        </div>
       </div>
       <div className="w-full">
-        <div className="flex justify-end pr-5">
+        <div className="flex justify-end items-center pr-5">
+          <h1>Sort by</h1>
           <Select onValueChange={(value) => setSortOrder(value)}>
-            <SelectTrigger className="w-[180px] h-7">
-              <SelectValue placeholder="Sort by" />
+            <SelectTrigger className="ml-1 w-[180px] h-7">
+              <SelectValue placeholder="default" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="default">Default</SelectItem>
@@ -109,11 +109,11 @@ function Product() {
             </SelectContent>
           </Select>
         </div>
-        <div className="grid grid-cols-4 grid-rows-4 gap-4 p-5 hover:cursor-auto">
-          {sortedProducts.map((product) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-5 hover:cursor-auto">
+          {filteredProducts.map((product) => (
             <Card
               key={product.id}
-              className="hover:cursor-pointer"
+              className="hover:cursor-pointer shadow-2xl"
             >
               <CardHeader
                 className="text-purple-950"
@@ -125,7 +125,9 @@ function Product() {
                 className="flex items-center justify-center"
                 onClick={() => handleProductClick(product)}
               >
-                <img
+                <motion.img
+                  whileHover={{ scale: 1.2 }}
+                  transition={{ duration: 0.3 }}
                   src={product.image}
                   alt={product.title}
                   className="size-[120px] object-cover rounded-[10px]"
