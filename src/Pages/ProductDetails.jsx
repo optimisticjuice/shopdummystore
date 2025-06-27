@@ -2,10 +2,12 @@ import { useLocation } from "react-router-dom";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Rating from '@mui/material/Rating';
-import Stack from '@mui/material/Stack';
+import { useDispatch } from "react-redux";
+import { increment } from "@/redux/Slices.js";
 
 function ProductDetails() {
   const location = useLocation();
+  const dispatch = useDispatch();
   const { product } = location.state || {};
 
   return (
@@ -25,7 +27,7 @@ function ProductDetails() {
             <hr />
             <div className="flex gap-3 justify-center">
               <Button>Buy</Button>
-              <Button>Add to Cart</Button>
+              <Button onClick={() => dispatch(increment())}>Add to Cart</Button>
             </div>
           </div>
         </div>

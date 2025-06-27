@@ -8,7 +8,7 @@ import '../assets/styles/navBar.css'
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 function Navbar() {
-  const count = useSelector((state) => state.counter.value)
+  const count = useSelector((state) => state.counter.cartItems)
 
   return (
     <nav>

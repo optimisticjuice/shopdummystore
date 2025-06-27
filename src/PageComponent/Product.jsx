@@ -16,7 +16,6 @@ function Product() {
   const dispatch = useDispatch();
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  // const [selectedCategories, setSelectedCategories] = useState([]);
   const [sortOrder, setSortOrder] = useState('default');
 
   useEffect(() => {
@@ -32,14 +31,6 @@ function Product() {
 
     fetchProducts();
   }, []);
-
-  // const handleCheckboxChange = (category) => {
-  //   setSelectedCategories(prev =>
-  //     prev.includes(category)
-  //       ? prev.filter(c => c !== category)
-  //       : [...prev, category]
-  //   );
-  // };
 
   const sortedProducts = [...products].sort((a, b) => {
     if (sortOrder === 'asc') {
